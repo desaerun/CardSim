@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 public class CardCollection {
-    private String label;
     protected ArrayList<Card> cards;
+    private String label;
 
     public CardCollection(String label) {
         this.label = label;
@@ -15,9 +15,11 @@ public class CardCollection {
     public Card getCard(int i) {
         return this.cards.get(i);
     }
+
     public String getLabel() {
         return this.label;
     }
+
     public void addCard(Card card) {
         this.cards.add(card);
     }
@@ -43,6 +45,12 @@ public class CardCollection {
         Card temp = cards.get(i);
         cards.set(i, cards.get(j));
         cards.set(j, temp);
+    }
+
+    public void print() {
+        for (Card card : this.cards) {
+            System.out.println(card);
+        }
     }
 
     public void shuffle() {
