@@ -4,6 +4,7 @@ import com.desaerun.Deck;
 
 public class BlackJackDeck extends Deck {
     public static final int number_decks = 4;
+
     public BlackJackDeck(String label) {
         super(label);
         for (int i = 1; i <= number_decks; i++) {

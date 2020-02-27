@@ -10,7 +10,9 @@ public class BlackJack {
     public void play(Player[] players, BlackJackDeck deck) {
         Player dealer = new Player("Dealer");
 
+        /*
         //fix this
         deck.deal(players[i].getHand(), 1);
+         */
     }
 }

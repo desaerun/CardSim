@@ -1,7 +1,6 @@
 package com.desaerun;
 
 public class Hand extends CardCollection {
-    private int value;
 
     public Hand(String label) {
         super(label);

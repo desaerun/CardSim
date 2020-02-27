@@ -6,25 +6,30 @@ public class BlackJackCard extends Card {
     public final Suit suit;
     public final Rank rank;
 
-    public BlackJackCard(Suit suit,Rank rank) {
+    public BlackJackCard(Suit suit, Rank rank) {
         this.suit = suit;
         this.rank = rank;
     }
+
     public int getValue() {
         return this.rank.getValue();
     }
+
     public Rank getRank() {
         return this.rank;
     }
+
     public String toString() {
         return rank + " of " + suit;
     }
+
     public enum Suit {
         Spades,
         Hearts,
         Clubs,
         Diamonds
     }
+
     public enum Rank {
         Two(2),
         Three(3),
@@ -40,9 +45,11 @@ public class BlackJackCard extends Card {
         King(10),
         Ace(11);
         int value;
+
         Rank(int value) {
             this.value = value;
         }
+
         public int getValue() {
             return value;
         }
