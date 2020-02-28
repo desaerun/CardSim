@@ -8,11 +8,6 @@ import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
-        List<Player> human_players = new ArrayList<>();
-
-        //get the player's name and create a Player object
-        human_players.add(new Player(MenuIO.printMenuGetString("What is your name?: ")));
-
         // while not 'exit'
         // ask them which game they want to play
         List<String> menu_text = new ArrayList<>();
@@ -32,7 +27,7 @@ public class Main {
                 //blackjack
                 BlackJackGame blackjack = new BlackJackGame();
                 blackjack.init();
-                blackjack.play(human_players);
+                blackjack.play();
                 break;
             case '2':
                 //hold'em

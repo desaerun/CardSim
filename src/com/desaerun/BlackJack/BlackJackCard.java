@@ -10,7 +10,6 @@ public class BlackJackCard extends Card {
         this.suit = suit;
         this.rank = rank;
     }
-
     public int getValue() {
         return this.rank.getValue();
     }

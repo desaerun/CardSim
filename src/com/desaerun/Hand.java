@@ -6,6 +6,11 @@ public class Hand extends CardCollection {
         super(label);
     }
 
+    public Hand(String label, Card card) {
+        super(label);
+        addCard(card);
+    }
+
     public void display() {
         System.out.println(getLabel() + ": ");
         for (int i = 0; i < size(); i++) {
