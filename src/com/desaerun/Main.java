@@ -1,45 +1,13 @@
 package com.desaerun;
 
+import com.desaerun.BlackJack.BlackJackGame;
+import com.desaerun.Utilities.MenuIO;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
 public class Main {
-    public static char printMenuGetChar(List<String> menu_text, char[] allowed) {
-        Scanner s = new Scanner(System.in);
-        char c;
-        boolean test = false;
-        do {
-            for (String menu_line : menu_text) {
-                System.out.println(menu_line);
-            }
-            String input = s.nextLine();
-            c = input.charAt(0);
-            for (char cur_char : allowed) {
-                cur_char = Character.toLowerCase(cur_char);
-                if (c == cur_char) {
-                    test = true;
-                    break;
-                }
-            }
-        } while (!test);
-        return c;
-    }
-
-    public static int printMenuGetInt(List<String> menu_text, int min_allowed, int max_allowed) {
-        Scanner s = new Scanner(System.in);
-        int input;
-        boolean test = false;
-        do {
-            for (String menu_line : menu_text) {
-                System.out.println(menu_line);
-            }
-            input = s.nextInt();
-            test = (input >= min_allowed && input <= max_allowed);
-        } while (!test);
-        return input;
-    }
-
     public static void main(String[] args) {
         List<Player> human_players = new ArrayList<>();
 
@@ -49,7 +17,7 @@ public class Main {
         String name = s.nextLine();
         human_players.add(new Player(name));
 
-        final List<String> menu_text = new ArrayList<>();
+        List<String> menu_text = new ArrayList<>();
         menu_text.add("Which game would you like to play?: ");
         menu_text.add("1. BlackJack");
         menu_text.add("2. Hold'em");
@@ -57,15 +25,14 @@ public class Main {
 
         final char[] menu_choices = {'1', 'q'};
 
-        char menu_choice = printMenuGetChar(menu_text, menu_choices);
-
+        char menu_choice = MenuIO.printMenuGetChar(menu_text, menu_choices);
+        menu_text.clear();
         switch (menu_choice) {
             case '1':
                 //blackjack
-                System.out.println("How many human players?: ");
-                int human_players_count_input = printMenuGetInt("How many human players?: ", 1, 6);
-
-
+                BlackJackGame blackjack = new BlackJackGame();
+                blackjack.init();
+                blackjack.play(human_players);
                 break;
             case '2':
                 //hold'em
