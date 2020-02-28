@@ -5,18 +5,16 @@ import com.desaerun.Utilities.MenuIO;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
         List<Player> human_players = new ArrayList<>();
 
         //get the player's name and create a Player object
-        System.out.println("What is your name?: ");
-        Scanner s = new Scanner(System.in);
-        String name = s.nextLine();
-        human_players.add(new Player(name));
+        human_players.add(new Player(MenuIO.printMenuGetString("What is your name?: ")));
 
+        // while not 'exit'
+        // ask them which game they want to play
         List<String> menu_text = new ArrayList<>();
         menu_text.add("Which game would you like to play?: ");
         menu_text.add("1. BlackJack");
@@ -25,8 +23,10 @@ public class Main {
 
         final char[] menu_choices = {'1', 'q'};
 
+
         char menu_choice = MenuIO.printMenuGetChar(menu_text, menu_choices);
         menu_text.clear();
+
         switch (menu_choice) {
             case '1':
                 //blackjack
@@ -39,12 +39,11 @@ public class Main {
                 break;
             case 'q':
         }
-        // while not 'exit'
-        // ask them which game they want to play
 
         //hold'em
         //blackjack
         //crazy 8's
+
         //play game
 /*
         p1.printWallet();

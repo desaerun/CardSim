@@ -14,7 +14,7 @@ public class BlackJackGame extends CardGame {
 
     public void play(List<Player> players) {
         Player dealer = new Player("Dealer");
-        List<Player> human_players = getHumanPlayers();
+        List<Player> human_players = getHumanPlayers(1, 6);
         /*
         //fix this
         deck.deal(players[i].getHand(), 1);
