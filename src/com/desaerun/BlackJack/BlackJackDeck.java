@@ -46,6 +46,9 @@ public class BlackJackDeck extends CardCollection {
         for (int i = 0; i < n; i++) {
             BlackJackCard card = popCard();
             System.out.println("popped card " + card);
+            if (card == null) {
+                throw new NullPointerException("Card is null");
+            }
             target.addCard(card);
         }
     }
