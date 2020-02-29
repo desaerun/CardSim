@@ -3,7 +3,7 @@ package com.desaerun.BlackJack;
 import com.desaerun.Player;
 
 public class BlackJackPlayer extends Player {
-    protected BlackJackHand hand;
+    public BlackJackHand hand;
 
     public BlackJackPlayer(String name) {
         super(name);

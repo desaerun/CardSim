@@ -2,9 +2,10 @@ package com.desaerun;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 public class CardCollection {
-    protected ArrayList<Card> cards;
+    protected List<Card> cards;
     private String label;
 
     public CardCollection(String label) {
@@ -32,7 +33,6 @@ public class CardCollection {
         int i = size() - 1;
         return popCard(i);
     }
-
     public Card lastCard() {
         return cards.get(cards.size() - 1);
     }

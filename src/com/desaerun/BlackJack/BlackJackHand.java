@@ -13,7 +13,7 @@ public class BlackJackHand extends Hand {
 
     public BlackJackHand(String label, BlackJackCard starting_card) {
         super(label);
-        this.cards.add(starting_card);
+        addCard(starting_card);
     }
 
     public BlackJackCard popCard(int i) {
@@ -44,5 +44,16 @@ public class BlackJackHand extends Hand {
             }
         }
         return sum;
+    }
+
+    public void display() {
+        System.out.println(getLabel() + ": ");
+        for (int i = 0; i < size(); i++) {
+            System.out.println(getCard(i));
+        }
+    }
+
+    public int size() {
+        return this.cards.size();
     }
 }
