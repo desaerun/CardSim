@@ -8,7 +8,7 @@ public class MenuIO {
     public static int printMenuGetInt(List<String> menu_text, int min_allowed, int max_allowed) {
         Scanner s = new Scanner(System.in);
         int input = 0;
-        boolean test = false;
+        boolean test;
         do {
             printMenuText(menu_text);
             try {
@@ -25,7 +25,7 @@ public class MenuIO {
     public static int printMenuGetInt(String menu_line, int min_allowed, int max_allowed) {
         Scanner s = new Scanner(System.in);
         int input = 0;
-        boolean test = false;
+        boolean test;
         do {
             System.out.println(menu_line);
             try {

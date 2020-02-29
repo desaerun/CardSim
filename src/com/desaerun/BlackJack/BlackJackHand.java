@@ -5,7 +5,7 @@ import com.desaerun.Hand;
 import java.util.ArrayList;
 
 public class BlackJackHand extends Hand {
-    protected ArrayList<BlackJackCard> cards;
+    public ArrayList<BlackJackCard> cards;
 
     public BlackJackHand(String label) {
         super(label);
@@ -13,7 +13,7 @@ public class BlackJackHand extends Hand {
 
     public BlackJackHand(String label, BlackJackCard starting_card) {
         super(label);
-        addCard(starting_card);
+        this.cards.add(starting_card);
     }
 
     public BlackJackCard popCard(int i) {
@@ -25,8 +25,13 @@ public class BlackJackHand extends Hand {
         return popCard(i);
     }
 
+    public void addCard(BlackJackCard card) {
+        this.cards.add(card);
+    }
+
     public BlackJackCard getCard(int i) {
-        return this.cards.get(i);
+        System.out.println("inside getCard method of BlackJackHand, this.cards is: ");
+        return cards.get(i);
     }
 
     public int getValue() {

@@ -5,8 +5,9 @@ import com.desaerun.Player;
 public class BlackJackPlayer extends Player {
     protected BlackJackHand hand;
 
-    public BlackJackPlayer(String label) {
-        super(label);
+    public BlackJackPlayer(String name) {
+        super(name);
+        this.hand = new BlackJackHand(name + "'s hand");
     }
 
     public BlackJackHand getHand() {
