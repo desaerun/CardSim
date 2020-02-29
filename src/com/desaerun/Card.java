@@ -13,10 +13,6 @@ public class Card {
         return this.rank;
     }
 
-    public int getValue() {
-        return 0;
-    }
-
     public String toString() {
         return rank + " of " + suit;
     }
