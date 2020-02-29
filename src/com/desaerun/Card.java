@@ -9,6 +9,10 @@ public class Card {
         this.rank = rank;
     }
 
+    public int getValue() {
+        throw new UnsupportedOperationException();
+    }
+
     public Rank getRank() {
         return this.rank;
     }

@@ -4,10 +4,13 @@ import com.desaerun.Card;
 import com.desaerun.CardCollection;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class BlackJackDeck extends CardCollection {
+    public List<BlackJackCard> cards;
     public BlackJackDeck(String label, int n_decks) {
         super(label);
+        cards = new ArrayList<>();
         for (int i = 0; i < n_decks; i++) {
             for (Card.Suit suit : Card.Suit.values()) {
                 for (Card.Rank rank : Card.Rank.values()) {
