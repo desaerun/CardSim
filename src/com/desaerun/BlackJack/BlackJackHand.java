@@ -9,10 +9,13 @@ public class BlackJackHand extends Hand {
 
     public BlackJackHand(String label) {
         super(label);
+        cards = new ArrayList<>();
+
     }
 
     public BlackJackHand(String label, BlackJackCard starting_card) {
         super(label);
+        cards = new ArrayList<>();
         addCard(starting_card);
     }
 
