@@ -3,6 +3,7 @@ package com.desaerun.BlackJack;
 import com.desaerun.Hand;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class BlackJackHand extends Hand {
     public ArrayList<BlackJackCard> cards;
@@ -10,7 +11,6 @@ public class BlackJackHand extends Hand {
     public BlackJackHand(String label) {
         super(label);
         cards = new ArrayList<>();
-
     }
 
     public BlackJackHand(String label, BlackJackCard starting_card) {
@@ -33,7 +33,6 @@ public class BlackJackHand extends Hand {
     }
 
     public BlackJackCard getCard(int i) {
-        System.out.println("inside getCard method of BlackJackHand, this.cards is: ");
         return cards.get(i);
     }
 
@@ -56,7 +55,15 @@ public class BlackJackHand extends Hand {
         }
     }
 
+    public void print() {
+        System.out.println(Arrays.toString(this.cards.toArray()));
+    }
+
     public int size() {
         return this.cards.size();
+    }
+
+    public boolean isBlackJack() {
+        return (size() == 2 && this.getCard(0).getValue() + this.getCard(1).getValue() == 21);
     }
 }

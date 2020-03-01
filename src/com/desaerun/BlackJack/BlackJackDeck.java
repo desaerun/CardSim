@@ -4,6 +4,7 @@ import com.desaerun.Card;
 import com.desaerun.CardCollection;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class BlackJackDeck extends CardCollection {
@@ -63,5 +64,15 @@ public class BlackJackDeck extends CardCollection {
 
     public int size() {
         return this.cards.size();
+    }
+
+    public void shuffle() {
+        Collections.shuffle(cards);
+    }
+
+    public void print() {
+        for (BlackJackCard card : this.cards) {
+            System.out.println(card);
+        }
     }
 }

@@ -1,4 +1,6 @@
-package com.desaerun;
+package com.desaerun.Uno;
+
+import com.desaerun.Deck;
 
 public class UnoDeck extends Deck {
     public UnoDeck(String label) {

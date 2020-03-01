@@ -1,5 +1,7 @@
 package com.desaerun;
 
-public class CardGame {
+public interface CardGame {
+    void init();
 
+    void play();
 }
