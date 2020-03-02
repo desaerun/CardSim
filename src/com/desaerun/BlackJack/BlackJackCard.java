@@ -6,6 +6,7 @@ public class BlackJackCard extends Card {
     public BlackJackCard(Suit suit, Rank rank) {
         super(suit, rank);
     }
+
     public int getValue() {
         int pos = rank.ordinal() + 2;
         if (pos == 14) { //ace

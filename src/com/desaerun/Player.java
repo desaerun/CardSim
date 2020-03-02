@@ -9,6 +9,7 @@ public class Player {
     public Player(String name) {
         this.name = name;
         this.hand = new Hand(name + "'s hand");
+        this.wallet = 10000;
     }
 
     public Hand getHand() {

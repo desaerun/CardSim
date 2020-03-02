@@ -39,6 +39,23 @@ public class MenuIO {
         return input;
     }
 
+    public static long printMenuGetLong(String menu_line, long min_allowed, long max_allowed) {
+        Scanner s = new Scanner(System.in);
+        long input = 0;
+        boolean test;
+        do {
+            System.out.println(menu_line);
+            try {
+                input = s.nextLong();
+            } catch (InputMismatchException e) {
+                System.out.println("You must enter a valid integer.");
+                s.next();
+            }
+            test = (input >= min_allowed && input <= max_allowed);
+        } while (!test);
+        return input;
+    }
+
     public static char printMenuGetChar(List<String> menu_text, char[] allowed) {
         Scanner s = new Scanner(System.in);
         char c;

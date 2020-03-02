@@ -7,6 +7,7 @@ import com.desaerun.Utilities.MenuIO;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.desaerun.Utilities.MenuIO.printMenuGetChar;
 import static com.desaerun.Utilities.MenuIO.printMenuGetString;
 
 public class BlackJackGame implements CardGame {
@@ -37,9 +38,7 @@ public class BlackJackGame implements CardGame {
 
     public void init() {
         System.out.println("Welcome to BlackJack!");
-        deck.print();
         deck.shuffle();
-        deck.print();
 
         //get the player's name and create a Player object
         human_players.add(new BlackJackPlayer(MenuIO.printMenuGetString("What is your name?: ")));
@@ -50,68 +49,87 @@ public class BlackJackGame implements CardGame {
     }
 
     public void playerTurn(BlackJackPlayer player, BlackJackHand hand) {
+        hand.setWager(player.getWager());
         Card up_card = dealer.getHand().getCard(1);
         System.out.println("Dealer's hand: [X, " + up_card + "]");
-        System.out.print(player.getName() + "'s hand: ");
         hand.print();
-        if (hand.getCard(0).getValue() == hand.getCard(1).getValue()) {
+
+        if (hand.getCard(0).getRank() == hand.getCard(1).getRank()) {
             char[] menu_options = {'y', 'n'};
             char option = MenuIO.printMenuGetChar("Would you like to split the hand?[Y/N]: ", menu_options);
             if (option == 'y') {
-                BlackJackHand hand1 = new BlackJackHand("Split hand 1", hand.popCard(0));
-                playerTurn(player, hand1);
-                BlackJackHand hand2 = new BlackJackHand("Split hand 2", hand.popCard(0));
-                playerTurn(player, hand2);
+                for (int i = 0; i < 2; i++) {
+                    int hand_index = player.num_hands();
+                    BlackJackHand split_hand = new BlackJackHand(player.getName() + " split hand " + hand_index, hand.popCard(0));
+                    deck.deal(split_hand, 1);
+                    player.addHand(split_hand);
+                    playerTurn(player, split_hand);
+                }
+                player.removeHand(0);
             }
         } else {
             boolean standing = false;
             int turn = 1;
             //this is the main player input loop
             do {
-                if (player.getHand().getCard(0).getValue() == player.getHand().getCard(1).getValue()) {
-
+                System.out.println("Dealer's hand: [X, " + up_card + "] [" + up_card.getValue() + "]");
+                hand.print();
+                if (hand.getCard(0).getValue() + hand.getCard(1).getValue() == 21) { // if the player has blackjack
                     standing = true;
-                }
-                if (turn == 1) {
-                    char[] menu_options = {'h', 's', 'd'};
-                    char input_option = MenuIO.printMenuGetChar("Would you like to [H]it, [S]tand, or [D]ouble down?: ", menu_options);
-                    switch (input_option) {
-                        case 'h':
-                            deck.deal(player.getHand(), 1);
-                            break;
-                        case 's':
-                            standing = true;
-                            break;
-                        case 'd':
-                            deck.deal(player.getHand(), 1);
-                            standing = true;
-                            player.setWager(player.getWager() * 2);
-                            break;
-                    }
+                    player.adjustWager((long) Math.floor(player.getWager() * .5));
                 } else {
-                    char[] menu_options = {'h', 's'};
-                    char input_option = MenuIO.printMenuGetChar("Would you like to [H]it or [S]tand?: ", menu_options);
-                    switch (input_option) {
-                        case 'h':
-                            deck.deal(player.getHand(), 1);
-                            break;
-                        case 's':
-                            standing = true;
-                            break;
-                        case 'd':
-                            deck.deal(player.getHand(), 1);
-                            standing = true;
-                            player.adjustWager(player.getWager());
-                            break;
+                    if (turn == 1) {
+                        char[] menu_options = {'h', 's', 'd'};
+                        char input_option = MenuIO.printMenuGetChar("Would you like to [H]it, [S]tand, or [D]ouble down?: ", menu_options);
+                        switch (input_option) {
+                            case 'h':
+                                deck.deal(hand, 1);
+                                break;
+                            case 's':
+                                standing = true;
+                                break;
+                            case 'd':
+                                if (hand.getWager() * 2 <= player.getWallet()) {
+                                    deck.deal(hand, 1);
+                                    standing = true;
+                                    hand.setWager(hand.getWager() * 2);
+                                } else {
+                                    if (printMenuGetChar("You do not have enough funds to double down completely, double down for less?[Y/N]:", new char[]{'y', 'n'}) == 'y') {
+                                        deck.deal(hand, 1);
+                                        standing = true;
+                                        hand.setWager(player.getWallet());
+                                    }
+                                }
+                                break;
+                        }
+                    } else {
+                        char[] menu_options = {'h', 's'};
+                        char input_option = MenuIO.printMenuGetChar("Would you like to [H]it or [S]tand?: ", menu_options);
+                        switch (input_option) {
+                            case 'h':
+                                deck.deal(hand, 1);
+                                break;
+                            case 's':
+                                standing = true;
+                                break;
+                            case 'd':
+                                deck.deal(hand, 1);
+                                standing = true;
+                                player.adjustWager(player.getWager());
+                                break;
+                        }
                     }
+                    hand.print();
                 }
                 turn++;
-            } while (!standing);
-            if (player.getHand().getValue() > 21) {
+            } while (!standing && hand.getValue() <= 21);
+            if (hand.getValue() > 21) {
                 System.out.println(player.getName() + " busts!");
+                hand.print();
             }
-            if (player.getHand().isBlackJack()) {
+            if (hand.isBlackJack()) {
                 System.out.println("Blackjack!");
+                hand.print();
             }
         }
 
@@ -119,33 +137,102 @@ public class BlackJackGame implements CardGame {
 
     public void dealerTurn(BlackJackPlayer dealer) {
         //dealer logic goes here
+        System.out.println("The dealer takes her turn: ");
+        while (dealer.getHand().getValue() <= 16 || (dealer.getHand().isSoft17())) {
+            System.out.print("Dealer hits: ");
+            deck.deal(dealer.getHand(), 1);
+            dealer.getHand().print();
+        }
+        if (dealer.getHand().getValue() < 21) {
+            System.out.println("Dealer stands.");
+        }
+    }
+
+    public void score(BlackJackPlayer dealer, List<BlackJackPlayer> human_players) {
+        if (dealer.getHand().getValue() > 21) {
+            System.out.println("Dealer busts!");
+        }
+        for (BlackJackPlayer player : human_players) {
+            for (BlackJackHand hand : player.getHands()) {
+                dealer.getHand().print();
+                hand.print();
+                if (dealer.getHand().getValue() > 21 && hand.getValue() < 21) {
+                    System.out.println("Dealer busts! Player " + player.getName() + " wins $" + hand.getWager() + "!");
+                    player.adjustWallet(hand.getWager());
+                } else if (hand.getValue() > dealer.getHand().getValue() && hand.getValue() < 21) {
+                    System.out.println("Player " + player.getName() + " beat the dealer! " + player.getName() + " wins $" + hand.getWager() + "!");
+                    player.adjustWallet(hand.getWager());
+                } else if (hand.getValue() > 21) {
+                    System.out.println("Player " + player.getName() + " busts! Player " + player.getName() + " loses $" + hand.getWager() + "!");
+                    player.adjustWallet(-hand.getWager());
+                } else if (dealer.getHand().getValue() > hand.getValue() && dealer.getHand().getValue() < 21) {
+                    System.out.println("Dealer wins! Player " + player.getName() + " loses $" + hand.getWager() + "!");
+                    player.adjustWallet(-hand.getWager());
+                } else if (player.getHand().isBlackJack()) {
+                    System.out.println("Player " + player.getName() + "has Blackjack! Player " + player.getName() + " wins 1.5x their wager ($" + (long) Math.floor(hand.getWager() * 1.5) + ")!");
+                    player.adjustWallet((long) Math.floor(hand.getWager() * 1.5));
+                } else {
+                    System.out.println("Push! Player " + player.getName() + " receives their wager of $" + hand.getWager() + " back!");
+                }
+                System.out.println(player.getName() + "'s balance: $" + player.getWallet());
+            }
+            player.resetHands();
+        }
+        dealer.getHand().reset();
     }
 
     public void play() {
-        //everyone gets a card until the dealer has two cards
-        for (int i = 0; i < 2; i++) {
-            for (BlackJackPlayer player : players) {
-                System.out.println("Dealing a card to player " + player.getName());
-                deck.deal(player.getHand(), 1);
+        do {
+            for (BlackJackPlayer player : human_players) {
+                if (player.getWallet() > 0) {
+                    long wager = MenuIO.printMenuGetLong(player.getName() + ", how much would you like to wager?: [$1-$" + player.getWallet() + "]", 1, player.getWallet());
+                    player.setWager(wager);
+                }
             }
-        }
-        if (!dealer.getHand().isBlackJack()) {
-            System.out.println();
-            System.out.print("Dealer's hand: ");
-            BlackJackCard up_card = dealer.getHand().getCard(0);
-            System.out.println("[X, " + up_card);
-        } else {
-            System.out.println();
-            dealer.getHand().print();
-            System.out.println("Dealer has Blackjack!");
-
-        }
-        for (BlackJackPlayer player : human_players) {
-            System.out.println("Player " + player.getName() + "'s turn: ");
-            if (!dealer.getHand().isBlackJack()) {
-                playerTurn(player, player.getHand());
+            //everyone gets a card until the dealer has two cards
+            for (int i = 0; i < 2; i++) {
+                for (BlackJackPlayer player : players) {
+                    if (player.getWallet() > 0) {
+                        deck.deal(player.getHand(0), 1);
+                    }
+                }
             }
-        }
-        dealerTurn(dealer);
+            if (!dealer.getHand().isBlackJack()) { // if the dealer doesn't have blackjack
+                System.out.println();
+                System.out.print("Dealer's hand: ");
+                BlackJackCard up_card = dealer.getHand(0).getCard(1);
+                System.out.println("[X, " + up_card + "] [" + up_card.getValue() + "]");
+                for (BlackJackPlayer player : human_players) {
+                    if (player.getWallet() > 0) {
+                        System.out.println("Player " + player.getName() + "'s turn: ");
+                        if (!dealer.getHand(0).isBlackJack()) {
+                            playerTurn(player, player.getHand(0));
+                        }
+                    }
+                }
+                dealerTurn(dealer);
+                score(dealer, human_players);
+            } else { // if dealer has blackjack
+                System.out.println();
+                dealer.getHand().print();
+                System.out.println("Dealer has Blackjack!");
+                score(dealer, human_players);
+/*                for (BlackJackPlayer player : human_players) {
+                    for (BlackJackHand hand : player.getHands()) {
+                        if (!hand.isBlackJack()) { //if dealer has blackjack but the player doesn't, player automatically loses
+                            System.out.println("Player " + player.getName() + " loses $" + player.getWager() + "!");
+                            player.adjustWallet(-player.getWager());
+                        } else { // if dealer has blackjack but so does the player, it's a push
+                            System.out.println("Player " + player.getName() + " pushes! You get your wager of $" + player.getWager() + " back!");
+                        }
+                    }
+                }*/
+            }
+            for (BlackJackPlayer player : human_players) {
+                if (player.getWallet() <= 0) {
+                    System.out.println(player.getName() + " is out of funds!");
+                }
+            }
+        } while (printMenuGetChar("Would you like to play again?[Y/N]", new char[]{'Y', 'N'}) != 'n');
     }
 }

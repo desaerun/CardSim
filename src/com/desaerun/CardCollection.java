@@ -5,8 +5,8 @@ import java.util.Collections;
 import java.util.List;
 
 public class CardCollection {
+    public String label;
     protected List<Card> cards;
-    private String label;
 
     public CardCollection(String label) {
         this.label = label;
@@ -33,6 +33,7 @@ public class CardCollection {
         int i = size() - 1;
         return popCard(i);
     }
+
     public Card lastCard() {
         return cards.get(cards.size() - 1);
     }

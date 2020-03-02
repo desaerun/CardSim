@@ -6,7 +6,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class BlackJackHand extends Hand {
-    public ArrayList<BlackJackCard> cards;
+    private ArrayList<BlackJackCard> cards;
+    private long wager;
 
     public BlackJackHand(String label) {
         super(label);
@@ -17,6 +18,18 @@ public class BlackJackHand extends Hand {
         super(label);
         cards = new ArrayList<>();
         addCard(starting_card);
+    }
+
+    public long getWager() {
+        return wager;
+    }
+
+    public void setWager(long wager) {
+        this.wager = wager;
+    }
+
+    public void reset() {
+        this.cards = new ArrayList<>();
     }
 
     public BlackJackCard popCard(int i) {
@@ -56,7 +69,7 @@ public class BlackJackHand extends Hand {
     }
 
     public void print() {
-        System.out.println(Arrays.toString(this.cards.toArray()));
+        System.out.println(getLabel() + ": " + Arrays.toString(this.cards.toArray()) + " [" + getValue() + "]");
     }
 
     public int size() {
@@ -65,5 +78,20 @@ public class BlackJackHand extends Hand {
 
     public boolean isBlackJack() {
         return (size() == 2 && this.getCard(0).getValue() + this.getCard(1).getValue() == 21);
+    }
+
+    public boolean isSoft17() {
+        if (getValue() == 17) {
+            int sum = 1;
+            for (BlackJackCard card : cards) {
+                if (card.getValue() == 11) {
+                    sum += 1;
+                } else {
+                    sum += card.getValue();
+                }
+            }
+            return sum == 17;
+        }
+        return false;
     }
 }

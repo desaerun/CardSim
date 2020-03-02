@@ -9,6 +9,7 @@ import java.util.List;
 
 public class BlackJackDeck extends CardCollection {
     public List<BlackJackCard> cards;
+
     public BlackJackDeck(String label, int n_decks) {
         super(label);
         cards = new ArrayList<>();
@@ -46,10 +47,6 @@ public class BlackJackDeck extends CardCollection {
     public void deal(BlackJackHand target, int n) {
         for (int i = 0; i < n; i++) {
             BlackJackCard card = popCard();
-            System.out.println("popped card " + card);
-            if (card == null) {
-                throw new NullPointerException("Card is null");
-            }
             target.addCard(card);
         }
     }
