@@ -1,6 +1,5 @@
 package com.desaerun.BlackJack;
 
-import com.desaerun.Card;
 import com.desaerun.CardGame;
 import com.desaerun.Utilities.MenuIO;
 
@@ -50,11 +49,12 @@ public class BlackJackGame implements CardGame {
 
     public void playerTurn(BlackJackPlayer player, BlackJackHand hand) {
         hand.setWager(player.getWager());
-        Card up_card = dealer.getHand().getCard(1);
-        System.out.println("Dealer's hand: [X, " + up_card + "]");
-        hand.print();
+
 
         if (hand.getCard(0).getRank() == hand.getCard(1).getRank()) {
+            System.out.println("--------------------------------------------------------------");
+            dealer.printDealerHand();
+            hand.print();
             char[] menu_options = {'y', 'n'};
             char option = MenuIO.printMenuGetChar("Would you like to split the hand?[Y/N]: ", menu_options);
             if (option == 'y') {
@@ -72,7 +72,8 @@ public class BlackJackGame implements CardGame {
             int turn = 1;
             //this is the main player input loop
             do {
-                System.out.println("Dealer's hand: [X, " + up_card + "] [" + up_card.getValue() + "]");
+                System.out.println("--------------------------------------------------------------");
+                dealer.printDealerHand();
                 hand.print();
                 if (hand.getCard(0).getValue() + hand.getCard(1).getValue() == 21) { // if the player has blackjack
                     standing = true;
@@ -119,29 +120,31 @@ public class BlackJackGame implements CardGame {
                                 break;
                         }
                     }
-                    hand.print();
                 }
                 turn++;
             } while (!standing && hand.getValue() <= 21);
             if (hand.getValue() > 21) {
                 System.out.println(player.getName() + " busts!");
-                hand.print();
             }
-            if (hand.isBlackJack()) {
-                System.out.println("Blackjack!");
-                hand.print();
+            if (hand.getValue() == 21 && !hand.isBlackJack()) {
+                System.out.println("21!");
             }
+            hand.print();
         }
-
+        if (hand.isBlackJack()) {
+            System.out.println("Blackjack!");
+            hand.print();
+        }
     }
 
     public void dealerTurn(BlackJackPlayer dealer) {
         //dealer logic goes here
         System.out.println("The dealer takes her turn: ");
+        dealer.printHand();
         while (dealer.getHand().getValue() <= 16 || (dealer.getHand().isSoft17())) {
             System.out.print("Dealer hits: ");
             deck.deal(dealer.getHand(), 1);
-            dealer.getHand().print();
+            dealer.printHand();
         }
         if (dealer.getHand().getValue() < 21) {
             System.out.println("Dealer stands.");
@@ -154,28 +157,40 @@ public class BlackJackGame implements CardGame {
         }
         for (BlackJackPlayer player : human_players) {
             for (BlackJackHand hand : player.getHands()) {
-                dealer.getHand().print();
+                dealer.printHand();
                 hand.print();
-                if (dealer.getHand().getValue() > 21 && hand.getValue() < 21) {
-                    System.out.println("Dealer busts! Player " + player.getName() + " wins $" + hand.getWager() + "!");
-                    player.adjustWallet(hand.getWager());
-                } else if (hand.getValue() > dealer.getHand().getValue() && hand.getValue() < 21) {
-                    System.out.println("Player " + player.getName() + " beat the dealer! " + player.getName() + " wins $" + hand.getWager() + "!");
-                    player.adjustWallet(hand.getWager());
-                } else if (hand.getValue() > 21) {
-                    System.out.println("Player " + player.getName() + " busts! Player " + player.getName() + " loses $" + hand.getWager() + "!");
-                    player.adjustWallet(-hand.getWager());
-                } else if (dealer.getHand().getValue() > hand.getValue() && dealer.getHand().getValue() < 21) {
-                    System.out.println("Dealer wins! Player " + player.getName() + " loses $" + hand.getWager() + "!");
-                    player.adjustWallet(-hand.getWager());
-                } else if (player.getHand().isBlackJack()) {
+                if (dealer.getHand().isBlackJack()) {
+                    if (hand.getValue() == 21) {
+                        System.out.println("Push! Player " + player.getName() + " receives their wager of $" + hand.getWager() + " back!");
+                    } else {
+                        System.out.println("Dealer wins! Player " + player.getName() + " loses $" + hand.getWager() + "!");
+                        player.adjustWallet(-hand.getWager());
+                    }
+                }
+                if (hand.isBlackJack()) {  // player had blackjack
                     System.out.println("Player " + player.getName() + "has Blackjack! Player " + player.getName() + " wins 1.5x their wager ($" + (long) Math.floor(hand.getWager() * 1.5) + ")!");
                     player.adjustWallet((long) Math.floor(hand.getWager() * 1.5));
-                } else {
+                } else if (dealer.getHand().getValue() > 21 && hand.getValue() <= 21) { // dealer busts and player didn't bust
+                    System.out.println("Dealer busts! Player " + player.getName() + " wins $" + hand.getWager() + "!");
+                    player.adjustWallet(hand.getWager());
+                } else if (hand.getValue() > dealer.getHand().getValue() && hand.getValue() <= 21) {  //player didn't bust, and beat the dealer
+                    System.out.println("Player " + player.getName() + " beat the dealer! " + player.getName() + " wins $" + hand.getWager() + "!");
+                    player.adjustWallet(hand.getWager());
+                } else if (hand.getValue() > 21) { // player busted
+                    System.out.println("Player " + player.getName() + " busts! Player " + player.getName() + " loses $" + hand.getWager() + "!");
+                    player.adjustWallet(-hand.getWager());
+                } else if (dealer.getHand().getValue() > hand.getValue() && dealer.getHand().getValue() <= 21) { // dealer beat the player and didn't bust
+                    System.out.println("Dealer wins! Player " + player.getName() + " loses $" + hand.getWager() + "!");
+                    player.adjustWallet(-hand.getWager());
+                } else if (hand.getValue() == dealer.getHand().getValue()) {  //players push
                     System.out.println("Push! Player " + player.getName() + " receives their wager of $" + hand.getWager() + " back!");
+                } else {
+                    System.out.println("Some weird shit happened.");
                 }
+                System.out.println("--------------------------------------------------------------");
                 System.out.println(player.getName() + "'s balance: $" + player.getWallet());
             }
+            System.out.println("--------------------------------------------------------------");
             player.resetHands();
         }
         dealer.getHand().reset();
@@ -204,6 +219,7 @@ public class BlackJackGame implements CardGame {
                 System.out.println("[X, " + up_card + "] [" + up_card.getValue() + "]");
                 for (BlackJackPlayer player : human_players) {
                     if (player.getWallet() > 0) {
+                        System.out.println("==============================================================");
                         System.out.println("Player " + player.getName() + "'s turn: ");
                         if (!dealer.getHand(0).isBlackJack()) {
                             playerTurn(player, player.getHand(0));
@@ -211,13 +227,10 @@ public class BlackJackGame implements CardGame {
                     }
                 }
                 dealerTurn(dealer);
-                score(dealer, human_players);
             } else { // if dealer has blackjack
-                System.out.println();
-                dealer.getHand().print();
+                dealer.printHand();
                 System.out.println("Dealer has Blackjack!");
-                score(dealer, human_players);
-/*                for (BlackJackPlayer player : human_players) {
+                /*                for (BlackJackPlayer player : human_players) {
                     for (BlackJackHand hand : player.getHands()) {
                         if (!hand.isBlackJack()) { //if dealer has blackjack but the player doesn't, player automatically loses
                             System.out.println("Player " + player.getName() + " loses $" + player.getWager() + "!");
@@ -228,6 +241,9 @@ public class BlackJackGame implements CardGame {
                     }
                 }*/
             }
+            System.out.println("==============================================================");
+            System.out.println("==============================================================");
+            score(dealer, human_players);
             for (BlackJackPlayer player : human_players) {
                 if (player.getWallet() <= 0) {
                     System.out.println(player.getName() + " is out of funds!");

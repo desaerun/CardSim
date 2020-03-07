@@ -44,4 +44,27 @@ public class BlackJackPlayer extends Player {
         this.hands = new ArrayList<>();
         this.hands.add(new BlackJackHand(name + "'s hand"));
     }
+
+    public void printHand(int i) {
+        hands.get(i).print();
+    }
+
+    public void printHand() {
+        printHand(0);
+    }
+
+    public void printDealerHand(boolean hide_downcard) {
+        if (hide_downcard) {
+            if (getHand(0).size() > 0) {
+                BlackJackCard up_card = getHand(0).getCard(1);
+                System.out.println("Dealer's hand: [X, " + up_card + "] [" + up_card.getValue() + "]");
+            }
+        } else {
+            getHand(0).print();
+        }
+    }
+
+    public void printDealerHand() {
+        printDealerHand(true);
+    }
 }

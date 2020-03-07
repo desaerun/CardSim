@@ -22,19 +22,6 @@ public class BlackJackDeck extends CardCollection {
         }
     }
 
-    public BlackJackDeck(String label) {
-        super(label);
-        this.cards = new ArrayList<>();
-        int number_decks = 1;
-        for (int i = 1; i <= number_decks; i++) {
-            for (Card.Suit suit : Card.Suit.values()) {
-                for (Card.Rank rank : Card.Rank.values()) {
-                    cards.add(new BlackJackCard(suit, rank));
-                }
-            }
-        }
-    }
-
     public BlackJackCard popCard(int i) {
         return cards.remove(i);
     }
